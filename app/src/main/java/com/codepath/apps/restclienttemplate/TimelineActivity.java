@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItem;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -30,7 +31,13 @@ public class TimelineActivity extends AppCompatActivity {
 
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
+
+    // for refreshing
     private SwipeRefreshLayout swipeContainer;
+
+    // for the progress loading action item
+    MenuItem miActionProgressItem;
+
     TwitterClient client;
 
     RecyclerView rvTweets;
@@ -53,6 +60,7 @@ public class TimelineActivity extends AppCompatActivity {
         // recycler view setup: layout manager and adapter
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         rvTweets.setAdapter(adapter);
+        
         populateHomeTimeline();
 
         // Setup refresh listener which triggers new data loading
@@ -74,6 +82,9 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     public void fetchTimelineAsync(int page) {
+        if (miActionProgressItem != null) {
+            showProgressBar();
+        }
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint.
@@ -90,9 +101,15 @@ public class TimelineActivity extends AppCompatActivity {
                     // ...the data has come back, add new items to your adapter...
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
+                    if (miActionProgressItem != null) {
+                        hideProgressBar();
+                    }
                 } catch (JSONException e) {
                     Log.e(TAG, "JSON exception", e);
                     e.printStackTrace();
+                    if (miActionProgressItem != null) {
+                        hideProgressBar();
+                    }
                 }
 
                 // Now we call setRefreshing(false) to signal refresh has finished
@@ -102,8 +119,11 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d("DEBUG", "Fetch timeline error ");
+                if (miActionProgressItem != null) {
+                    hideProgressBar();
+                }
             }
-
+            /*
             public void onSuccess(JSONArray json) {
                 // Remember to CLEAR OUT old items before appending in the new ones
                 adapter.clear();
@@ -117,19 +137,21 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(Throwable e) {
                 Log.d("DEBUG", "Fetch timeline error: " + e.toString());
             }
+
+             */
         });
     }
 
+    // for toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu, this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return true;
         //return super.onCreateOptionsMenu(menu);
-
     }
 
+    // for toolbar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.compose) {
@@ -143,6 +165,22 @@ public class TimelineActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    // for progress bar
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        Log.i(TAG, "Get here?");
+
+        if (miActionProgressItem != null) {
+            showProgressBar();
+        }
+        // return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    // for getting data back to parent activity after child activity finished
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
@@ -155,10 +193,14 @@ public class TimelineActivity extends AppCompatActivity {
             adapter.notifyItemInserted(0);
             rvTweets.smoothScrollToPosition(0);
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void populateHomeTimeline() {
+        if (miActionProgressItem != null) {
+            showProgressBar();
+        }
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -168,16 +210,37 @@ public class TimelineActivity extends AppCompatActivity {
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
+                    if (miActionProgressItem != null) {
+                        hideProgressBar();
+                    }
                 } catch (JSONException e) {
                     Log.e(TAG, "JSON exception", e);
                     e.printStackTrace();
+                    if (miActionProgressItem != null) {
+                        hideProgressBar();
+                    }
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.i(TAG, "failure! Response: " + response, throwable);
+                if (miActionProgressItem != null) {
+                    hideProgressBar();
+                }
             }
         });
     }
+
+    // making the progress bar visible and invisible
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
+    }
+
 }

@@ -60,7 +60,7 @@ public class TimelineActivity extends AppCompatActivity {
         // recycler view setup: layout manager and adapter
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         rvTweets.setAdapter(adapter);
-        
+
         populateHomeTimeline();
 
         // Setup refresh listener which triggers new data loading

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -21,11 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.Headers;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
@@ -144,10 +148,93 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         }
 
         private void onClickFavoriteAction(View view) {
+            Tweet tweet = tweets.get(getAdapterPosition());
+            if (tweet.isFavorited) {
+                // unfavorite the tweet
 
+                client.destroyFavorite(tweet.id, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Toast.makeText(context, "Unfavorited!", Toast.LENGTH_SHORT).show();
+                        toggleFavoriteSetting(getAdapterPosition());
+                        return;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Toast.makeText(context, "Unfavoriting failed", Toast.LENGTH_SHORT).show();
+
+                        return;
+
+                    }
+                });
+                return;
+
+            } else {
+                // favorite the tweet
+                client.createFavorite(tweet.id, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Toast.makeText(context, "Favorited!", Toast.LENGTH_SHORT).show();
+                        toggleFavoriteSetting(getAdapterPosition());
+                        return;
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Toast.makeText(context, "Favoriting failed", Toast.LENGTH_SHORT).show();
+                        return;
+
+                    }
+                });
+
+            }
         }
 
         private void onClickRetweetAction(View view) {
+            Tweet tweet = tweets.get(getAdapterPosition());
+            if (tweet.isRetweeted) {
+                // unfavorite the tweet
+
+                client.destroyRetweet(tweet.id, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Toast.makeText(context, "Un-retweeted!", Toast.LENGTH_SHORT).show();
+                        toggleRetweetSetting(getAdapterPosition());
+                        return;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Toast.makeText(context, "Un-retweet failed", Toast.LENGTH_SHORT).show();
+
+                        return;
+
+                    }
+                });
+                return;
+
+            } else {
+                // favorite the tweet
+                client.createRetweet(tweet.id, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Toast.makeText(context, "Retweeted!", Toast.LENGTH_SHORT).show();
+                        toggleRetweetSetting(getAdapterPosition());
+                        return;
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Toast.makeText(context, "Retweeting failed", Toast.LENGTH_SHORT).show();
+                        return;
+
+                    }
+                });
+
+            }
         }
 
         private void onClickReplyAction(View view) {
@@ -198,5 +285,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             return relativeDate;
         }
 
+    }
+
+    private void toggleFavoriteSetting(int position) {
+        tweets.get(position).isFavorited =  !tweets.get(position).isFavorited;
+    }
+
+    private void toggleRetweetSetting(int position) {
+        tweets.get(position).isRetweeted =  !tweets.get(position).isRetweeted;
     }
 }

@@ -15,6 +15,8 @@ public class Tweet {
     public User user;
     public String mediaUrl;
     public long id;
+    public boolean isFavorited;
+    public boolean isRetweeted;
 
     // empty constructor needed by the Parceler library
     public Tweet() {}
@@ -25,6 +27,8 @@ public class Tweet {
         tweet.created_at = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.id = jsonObject.getLong("id");
+        tweet.isFavorited = jsonObject.getBoolean("favorited");
+        tweet.isRetweeted = jsonObject.getBoolean("retweeted");
 
         if (jsonObject.getJSONObject("entities").has("media")) {
             tweet.mediaUrl = jsonObject.getJSONObject("entities")

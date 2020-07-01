@@ -21,10 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_toEndOf="@+id/ivProfileImage"
-        tools:text="rpandey1234" />
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="60dp"
+        android:layout_toEndOf="@+id/tvName"
+        android:textColor="#787878"
+        tools:text="\@rpandey1234" />
 
     <TextView
         android:id="@+id/tvBody"
@@ -44,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/tvScreenName"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="0dp"
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@+id/tvScreenName"
         tools:text="8h" />
@@ -61,4 +64,14 @@
         android:layout_marginBottom="9dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        tools:text="Rahul Pandey" />
 </RelativeLayout>

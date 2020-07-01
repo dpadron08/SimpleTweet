@@ -74,6 +74,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
+        TextView tvName;
         TextView tvRelativeTimestamp;
         ImageView ivMedia;
 
@@ -83,6 +84,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvName = itemView.findViewById(R.id.tvName);
             tvRelativeTimestamp = itemView.findViewById(R.id.tvRelativeTimestamp);
             ivMedia = itemView.findViewById(R.id.ivMedia);
         }
@@ -90,7 +92,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         @RequiresApi(api = Build.VERSION_CODES.N)
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
-            tvScreenName.setText(tweet.user.screen_name);
+
+            String screenName = "@" + tweet.user.screen_name;
+            tvScreenName.setText(screenName);
+            tvName.setText(tweet.user.name);
+
             tvRelativeTimestamp.setText(getRelativeTimeAgo(tweet.created_at));
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
             Glide.with(context).load(tweet.mediaUrl).into(ivMedia);

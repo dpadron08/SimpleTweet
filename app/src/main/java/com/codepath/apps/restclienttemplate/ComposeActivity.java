@@ -35,9 +35,15 @@ public class ComposeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compose);
 
         client = TwitterApp.getRestClient(this);
-
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
+
+        final long replyingToId = getIntent().getLongExtra("replyingToId", 0);
+        final String replyingToTweetOwner = getIntent().getStringExtra("replyingToTweetOwner");
+        if (replyingToId != 0) {
+            String intro = "@" + replyingToTweetOwner;
+            etCompose.setText(intro);
+        }
 
         // set a click listener on the button
         btnTweet.setOnClickListener(new View.OnClickListener() {
@@ -54,16 +60,19 @@ public class ComposeActivity extends AppCompatActivity {
                 }
                 Toast.makeText(ComposeActivity.this, tweetContent, Toast.LENGTH_LONG).show();
                 // make api call to twitter to publish the tweet
-                client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
+                client.publishTweet(tweetContent, replyingToId, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.i(TAG, "onSuccess to publish tweet");
                         try {
                             Tweet tweet = Tweet.fromJson(json.jsonObject);
                             Log.i(TAG, "Published tweet says " + tweet.body);
-                            Intent intent = new Intent();
+                            Intent intent = new Intent(ComposeActivity.this, TimelineActivity.class);
                             intent.putExtra("tweet", Parcels.wrap(tweet));
                             setResult(RESULT_OK, intent); // set result code and bundle data for response
+
+                            // added so i dont need to refresh to see reply to tweet
+                            startActivityForResult(intent, 20);
                             finish(); // closes the activity, pass data to parent
                         } catch (JSONException e) {
                             e.printStackTrace();

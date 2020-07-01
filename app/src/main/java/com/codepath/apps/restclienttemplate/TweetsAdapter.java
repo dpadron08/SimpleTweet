@@ -1,13 +1,17 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.ParseException;
 import android.os.Build;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -25,11 +31,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     Context context;
     List<Tweet> tweets;
+    TwitterClient client;
+    private final int REQUEST_CODE = 40;
 
     // Pass in context and list of tweets
     public TweetsAdapter(Context context, List<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
+        this.client = TwitterApp.getRestClient(context);
     }
 
     // for each row, inflate the layout for the tweet
@@ -42,6 +51,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
 
     // bind values based on the position
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the data at position
@@ -78,6 +88,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvRelativeTimestamp;
         ImageView ivMedia;
 
+        Button btnReply;
+        Button btnRetweet;
+        Button btnFavorite;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +101,68 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvRelativeTimestamp = itemView.findViewById(R.id.tvRelativeTimestamp);
             ivMedia = itemView.findViewById(R.id.ivMedia);
+
+            btnReply = itemView.findViewById(R.id.btnReply);
+            btnRetweet = itemView.findViewById(R.id.btnRetweet);
+            btnFavorite = itemView.findViewById(R.id.btnFavorite);
+
+            setMyOnClickListeners(itemView);
+        }
+
+        private void setMyOnClickListeners(View itemView) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("ABC", "Clicking tweet itself");
+                    onClickTweetAction(view);
+                }
+            });
+
+            btnReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("ABC", "Clicking reply button");
+                    onClickReplyAction(view);
+                }
+            });
+            
+            btnRetweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("ABC", "Clicking Retweet button");
+                    onClickRetweetAction(view);
+                }
+            });
+            
+            btnFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("ABC", "Clicking favorite button");
+                    onClickFavoriteAction(view);
+                }
+            });
+        }
+
+        private void onClickFavoriteAction(View view) {
+
+        }
+
+        private void onClickRetweetAction(View view) {
+        }
+
+        private void onClickReplyAction(View view) {
+            // launch new compose intent and send the username that is going to be replied to
+            Intent intent = new Intent(context, ComposeActivity.class);
+            Tweet tweet = tweets.get(getAdapterPosition());
+            intent.putExtra("replyingToId", tweet.id);
+            intent.putExtra("replyingToTweetOwner", tweet.user.screen_name);
+            intent.putExtra("tweet", Parcels.wrap(tweet));
+
+            (  (TimelineActivity) context ).onActivityResult(REQUEST_CODE, Activity.RESULT_OK, intent);
+            //context.startActivity(intent); // before adding ability to not need to refresh to view reply
+        }
+
+        private void onClickTweetAction(View view) {
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)

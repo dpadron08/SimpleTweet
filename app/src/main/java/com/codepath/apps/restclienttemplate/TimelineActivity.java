@@ -159,6 +159,8 @@ public class TimelineActivity extends AppCompatActivity {
             //Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
             // navigate to a new compose activity
             Intent intent = new Intent(this, ComposeActivity.class);
+            intent.putExtra("replyingToId", 0L);
+            intent.putExtra("replyingToTweetOwner", "empty");
             startActivityForResult(intent, REQUEST_CODE);
             return true;
         }
@@ -192,6 +194,15 @@ public class TimelineActivity extends AppCompatActivity {
             // update the adapter
             adapter.notifyItemInserted(0);
             rvTweets.smoothScrollToPosition(0);
+        } else {
+            /*
+                Added for ability to not need to refresh upon sending a reply
+             */
+            Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class);
+            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            intent.putExtra("replyingToId", tweet.id);
+            intent.putExtra("replyingToTweetOwner", tweet.user.screen_name);
+            startActivity(intent);
         }
 
         super.onActivityResult(requestCode, resultCode, data);

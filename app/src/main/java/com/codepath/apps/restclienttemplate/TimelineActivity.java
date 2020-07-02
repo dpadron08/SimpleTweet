@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -49,15 +51,23 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
+        // setContentView(R.layout.activity_timeline); removed for VB
+        ActivityTimelineBinding binding = ActivityTimelineBinding.inflate(getLayoutInflater()); // VB
+        View view = binding.getRoot(); // VB
+        setContentView(view); // VB
+
         client = TwitterApp.getRestClient(this);
 
 
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        //swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer); // removed for VB
+        swipeContainer = binding.swipeContainer; // VB
+
         // find the recycler view
-        rvTweets = findViewById(R.id.rvTweets);
+        //rvTweets = findViewById(R.id.rvTweets); // removed for VB
+        rvTweets = binding.rvTweets;
         // initialize the list of tweets and adapter
+
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
 

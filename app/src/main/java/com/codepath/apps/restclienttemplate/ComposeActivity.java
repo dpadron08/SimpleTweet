@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.codepath.apps.restclienttemplate.databinding.ActivityComposeBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -32,11 +33,16 @@ public class ComposeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compose);
+        //setContentView(R.layout.activity_compose); removed for VB
+        ActivityComposeBinding binding = ActivityComposeBinding.inflate(getLayoutInflater()); // VB
+        View view = binding.getRoot(); // VB
+        setContentView(view);
 
         client = TwitterApp.getRestClient(this);
-        etCompose = findViewById(R.id.etCompose);
-        btnTweet = findViewById(R.id.btnTweet);
+        // etCompose = findViewById(R.id.etCompose); removed for VB
+        etCompose = binding.etCompose; // VB
+        // btnTweet = findViewById(R.id.btnTweet); removed for VB
+        btnTweet = binding.btnTweet; // VB
 
         final long replyingToId = getIntent().getLongExtra("replyingToId", 0);
         final String replyingToTweetOwner = getIntent().getStringExtra("replyingToTweetOwner");
@@ -58,7 +64,7 @@ public class ComposeActivity extends AppCompatActivity {
                     Toast.makeText(ComposeActivity.this, "Sorry, your tweet is too long", Toast.LENGTH_LONG).show();
                     return;
                 }
-                Toast.makeText(ComposeActivity.this, tweetContent, Toast.LENGTH_LONG).show();
+                
                 // make api call to twitter to publish the tweet
                 client.publishTweet(tweetContent, replyingToId, new JsonHttpResponseHandler() {
                     @Override

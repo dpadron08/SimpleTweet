@@ -6,6 +6,11 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
+        <!-- Change tool bar color-->
+
+        <item name="colorPrimary">#33B5E5</item>
+
+
     </style>
 
     <!-- Application theme. -->

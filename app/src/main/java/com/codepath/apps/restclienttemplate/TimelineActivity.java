@@ -189,6 +189,7 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu, this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
         //return super.onCreateOptionsMenu(menu);
     }
@@ -236,7 +237,7 @@ public class TimelineActivity extends AppCompatActivity {
             // update the adapter
             adapter.notifyItemInserted(0);
             rvTweets.smoothScrollToPosition(0);
-        } else {
+        } else if (requestCode == 40 && resultCode == RESULT_OK) {
             /*
                 Added for ability to not need to refresh upon sending a reply
              */

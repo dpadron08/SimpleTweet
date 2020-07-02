@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="10dp"
+    app:layout_goneMarginBottom="0dp">
 
     <ImageView
         android:id="@+id/ivProfileImage"
@@ -37,9 +38,9 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivProfileImage"
-        tools:text="This is my tweet!"
         android:autoLink="all"
-        android:linksClickable="true"/>
+        android:linksClickable="true"
+        tools:text="This is my tweet!" />
 
     <TextView
         android:id="@+id/tvRelativeTimestamp"
@@ -109,4 +110,14 @@
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/btnRetweet"
         android:background="@drawable/ic_heart_unpressed" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnRetweet"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="2dp"
+        android:background="?android:attr/listDivider" />
 </RelativeLayout>

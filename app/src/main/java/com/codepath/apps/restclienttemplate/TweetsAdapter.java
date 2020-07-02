@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.net.ParseException;
 import android.os.Build;
@@ -157,6 +158,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Toast.makeText(context, "Unfavorited!", Toast.LENGTH_SHORT).show();
                         toggleFavoriteSetting(getAdapterPosition());
+                        btnFavorite.setBackgroundResource(R.drawable.ic_heart_unpressed);
                         return;
                     }
 
@@ -177,6 +179,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Toast.makeText(context, "Favorited!", Toast.LENGTH_SHORT).show();
                         toggleFavoriteSetting(getAdapterPosition());
+                        btnFavorite.setBackgroundResource(R.drawable.ic_heart_pressed_red);
                         return;
 
                     }
@@ -202,6 +205,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Toast.makeText(context, "Un-retweeted!", Toast.LENGTH_SHORT).show();
                         toggleRetweetSetting(getAdapterPosition());
+                        btnRetweet.setBackgroundResource(R.drawable.ic_retweet_unpressed);
                         return;
                     }
 
@@ -222,6 +226,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Toast.makeText(context, "Retweeted!", Toast.LENGTH_SHORT).show();
                         toggleRetweetSetting(getAdapterPosition());
+                        btnRetweet.setBackgroundResource(R.drawable.ic_retweet_pressed);
                         return;
 
                     }
@@ -264,6 +269,19 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
             Glide.with(context).load(tweet.mediaUrl).into(ivMedia);
 
+            if (tweet.isFavorited) {
+                btnFavorite.setBackgroundResource(R.drawable.ic_heart_pressed_red);
+            } else {
+                btnFavorite.setBackgroundResource(R.drawable.ic_heart_unpressed);
+            }
+
+            if (tweet.isRetweeted) {
+                btnRetweet.setBackgroundResource(R.drawable.ic_retweet_pressed);
+            } else {
+                btnRetweet.setBackgroundResource(R.drawable.ic_retweet_unpressed);
+            }
+
+            btnReply.setBackgroundResource(R.drawable.ic_reply);
         }
 
         // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");

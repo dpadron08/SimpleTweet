@@ -77,36 +77,36 @@
 
     <Button
         android:id="@+id/btnReply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_below="@+id/ivMedia"
         android:layout_alignParentBottom="false"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="1dp"
         android:layout_toEndOf="@+id/ivProfileImage"
-        android:text="Reply" />
+        android:background="@drawable/ic_reply" />
 
     <Button
         android:id="@+id/btnRetweet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_below="@+id/ivMedia"
         android:layout_alignParentBottom="false"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/btnReply"
-        android:text="Retweet" />
+        android:background="@drawable/ic_retweet_unpressed" />
 
     <Button
         android:id="@+id/btnFavorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_below="@+id/ivMedia"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/btnRetweet"
-        android:text="Like" />
+        android:background="@drawable/ic_heart_unpressed" />
 </RelativeLayout>

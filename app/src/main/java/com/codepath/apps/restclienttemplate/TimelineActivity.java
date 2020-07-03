@@ -62,6 +62,7 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(view); // VB
 
         client = TwitterApp.getRestClient(this);
+        //client.clearAccessToken();
         tweetDao = ((TwitterApp) getApplicationContext()).getMyDatabase().tweetDao();
 
 

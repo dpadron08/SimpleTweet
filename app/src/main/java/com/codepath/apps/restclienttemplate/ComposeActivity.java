@@ -27,35 +27,38 @@ public class ComposeActivity extends AppCompatActivity {
     EditText etCompose;
     Button btnTweet;
 
+    // for receiving data from Twitter API
     TwitterClient client;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_compose); removed for VB
+        // Viewbinding to reduce boiler plate
         ActivityComposeBinding binding = ActivityComposeBinding.inflate(getLayoutInflater()); // VB
         View view = binding.getRoot(); // VB
         setContentView(view);
 
         client = TwitterApp.getRestClient(this);
-        // etCompose = findViewById(R.id.etCompose); removed for VB
         etCompose = binding.etCompose; // VB
-        // btnTweet = findViewById(R.id.btnTweet); removed for VB
         btnTweet = binding.btnTweet; // VB
 
+        // determine whether this tweet is being composed in response to another tweet
         final long replyingToId = getIntent().getLongExtra("replyingToId", 0);
         final String replyingToTweetOwner = getIntent().getStringExtra("replyingToTweetOwner");
         if (replyingToId != 0) {
+            // we're composing a reply tweet
             String intro = "@" + replyingToTweetOwner;
             etCompose.setText(intro);
         }
 
-        // set a click listener on the button
+        // set a click listener on the button to tweet
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String tweetContent = etCompose.getText().toString();
+
+                // refuse to publish tweet if it does not meet length guidelines
                 if (tweetContent.isEmpty()) {
                     Toast.makeText(ComposeActivity.this, "Sorry, your tweet cannot be empty", Toast.LENGTH_LONG).show();
                     return;

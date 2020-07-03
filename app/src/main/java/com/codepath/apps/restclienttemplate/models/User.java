@@ -31,6 +31,7 @@ public class User {
     // empty constructor needed for Parceler library
     public User() {}
 
+    // extract User data from JSON response
     public static User fromJson(JSONObject jsonObject) throws JSONException {
         User user = new User();
         user.id = jsonObject.getLong("id");

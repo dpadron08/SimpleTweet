@@ -34,47 +34,46 @@ import okhttp3.Headers;
 
 public class TimelineActivity extends AppCompatActivity {
 
-
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
+
+    // for persistence
     TweetDao tweetDao;
 
-    // for refreshing
+    // for refreshing by swiping down
     private SwipeRefreshLayout swipeContainer;
 
     // for the progress loading action item
     MenuItem miActionProgressItem;
 
+    // for receiving data from Twitter API
     TwitterClient client;
 
     RecyclerView rvTweets;
     List<Tweet> tweets;
     TweetsAdapter adapter;
 
+    // for endless scrolling
     EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_timeline); removed for VB
+        // use view binding to reduce View boilerplate
         ActivityTimelineBinding binding = ActivityTimelineBinding.inflate(getLayoutInflater()); // VB
         View view = binding.getRoot(); // VB
         setContentView(view); // VB
 
         client = TwitterApp.getRestClient(this);
-        //client.clearAccessToken();
         tweetDao = ((TwitterApp) getApplicationContext()).getMyDatabase().tweetDao();
 
-
         // Lookup the swipe container view
-        //swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer); // removed for VB
         swipeContainer = binding.swipeContainer; // VB
 
         // find the recycler view
-        //rvTweets = findViewById(R.id.rvTweets); // removed for VB
         rvTweets = binding.rvTweets;
-        // initialize the list of tweets and adapter
 
+        // initialize the list of tweets and adapter
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
 
@@ -101,12 +100,10 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 fetchTimelineAsync(0);
             }
         });
+
         // Configure the refreshing colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -122,9 +119,6 @@ public class TimelineActivity extends AppCompatActivity {
         };
         // Add the scroll listener to RecyclerView
         rvTweets.addOnScrollListener(scrollListener);
-
-
-
     }
 
     private void loadMoreData() {
@@ -160,7 +154,6 @@ public class TimelineActivity extends AppCompatActivity {
         }
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
-        // getHomeTimeline is an example endpoint.
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -220,7 +213,6 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu, this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return true;
         //return super.onCreateOptionsMenu(menu);
     }
@@ -230,7 +222,6 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.compose) {
             // compose icon has been selected
-            //Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
             // navigate to a new compose activity
             Intent intent = new Intent(this, ComposeActivity.class);
             intent.putExtra("replyingToId", 0L);
@@ -293,6 +284,7 @@ public class TimelineActivity extends AppCompatActivity {
                 JSONArray jsonArray = json.jsonArray;
 
                 try {
+                    // fresh tweets from the network
                     final List<Tweet> tweetsFromNetwork = Tweet.fromJsonArray(jsonArray);
                     adapter.clear(); // new
                     tweets.addAll(tweetsFromNetwork);

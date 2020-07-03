@@ -114,6 +114,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             setMyOnClickListeners(itemView);
         }
 
+        // set up all the on click listeners needed for the view holder
         private void setMyOnClickListeners(View itemView) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -148,6 +149,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             });
         }
 
+        // "favorite" or "unfavorite" a tweet if this favorite button is pressed
         private void onClickFavoriteAction(View view) {
             Tweet tweet = tweets.get(getAdapterPosition());
             if (tweet.isFavorited) {
@@ -195,10 +197,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             }
         }
 
+        // "retweet" or "un retweet" a tweet if this retweet button is pressed
         private void onClickRetweetAction(View view) {
             Tweet tweet = tweets.get(getAdapterPosition());
             if (tweet.isRetweeted) {
-                // unfavorite the tweet
+                // un retweet the tweet
 
                 client.destroyRetweet(tweet.id, new JsonHttpResponseHandler() {
                     @Override
@@ -220,7 +223,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 return;
 
             } else {
-                // favorite the tweet
+                // retweet the tweet
                 client.createRetweet(tweet.id, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -242,6 +245,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             }
         }
 
+        // reply to a tweet if reply button pressed
         private void onClickReplyAction(View view) {
             // launch new compose intent and send the username that is going to be replied to
             Intent intent = new Intent(context, ComposeActivity.class);
@@ -269,6 +273,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
             Glide.with(context).load(tweet.mediaUrl).into(ivMedia);
 
+            // set the right icons for each tweet depending on if the tweets were favorited or retweeted
             if (tweet.isFavorited) {
                 btnFavorite.setBackgroundResource(R.drawable.ic_heart_pressed_red);
             } else {
@@ -281,10 +286,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 btnRetweet.setBackgroundResource(R.drawable.ic_retweet_unpressed);
             }
 
+            // set twitter resource for reply button
             btnReply.setBackgroundResource(R.drawable.ic_reply);
         }
 
-        // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
         @RequiresApi(api = Build.VERSION_CODES.N)
         public String getRelativeTimeAgo(String rawJsonDate) {
             String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
@@ -305,10 +310,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     }
 
+    // toggle favorite status
     private void toggleFavoriteSetting(int position) {
         tweets.get(position).isFavorited =  !tweets.get(position).isFavorited;
     }
 
+    // toggle retweet status
     private void toggleRetweetSetting(int position) {
         tweets.get(position).isRetweeted =  !tweets.get(position).isRetweeted;
     }

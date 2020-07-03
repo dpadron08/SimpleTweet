@@ -46,6 +46,7 @@ public class Tweet {
     // empty constructor needed by the Parceler library
     public Tweet() {}
 
+    // extract tweet data from JSON response
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.body = jsonObject.getString("text");
@@ -58,6 +59,7 @@ public class Tweet {
         tweet.isFavorited = jsonObject.getBoolean("favorited");
         tweet.isRetweeted = jsonObject.getBoolean("retweeted");
 
+        // determine whether tweet has attached media
         if (jsonObject.getJSONObject("entities").has("media")) {
             tweet.mediaUrl = jsonObject.getJSONObject("entities")
                     .getJSONArray("media").getJSONObject(0)
@@ -69,6 +71,7 @@ public class Tweet {
         return tweet;
     }
 
+    // extract tweets from json Array
     public static List<Tweet> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
